@@ -5,11 +5,6 @@ Aplicación de recomendación de películas con arquitectura de tres servicios:
 
 ---
 
-## Arquitectura
-
-```
-```
-
 ## Inicio rápido
 
 ### 1. Clonar y configurar entorno
