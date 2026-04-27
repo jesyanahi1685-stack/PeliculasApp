@@ -1,25 +1,9 @@
-# 🎬 Movie Recommender — Proyecto Escolar
+# App de recomendación de películas
 
 Aplicación de recomendación de películas con arquitectura de tres servicios:
 **Backend** (Node/Express + Prisma), **Frontend** (React/Vite) y **AI Service** (Python/FastAPI).
 
 ---
-
-## Arquitectura
-
-```
-┌──────────────┐     REST      ┌───────────────┐     HTTP      ┌──────────────┐
-│   Frontend   │ ─────────────▶│    Backend    │ ─────────────▶│  AI Service  │
-│  React/Vite  │               │ Express+Prisma│               │   FastAPI    │
-│   :5173      │               │    :3001      │               │    :8000     │
-└──────────────┘               └──────┬────────┘               └──────────────┘
-                                      │ Prisma ORM
-                                      ▼
-                               ┌──────────────┐
-                               │  PostgreSQL  │
-                               │   :5432      │
-                               └──────────────┘
-```
 
 ## Inicio rápido
 
@@ -46,11 +30,10 @@ docker compose exec backend npm run db:seed
 ```
 
 ### 4. Abrir la app
-| Servicio     | URL                          |
-|--------------|------------------------------|
-| Frontend     | http://localhost:5173        |
-| Backend API  | http://localhost:3001/api    |
-| AI Service   | http://localhost:8000/docs   |
+ Servicio      URL                          
+ Frontend      http://localhost:5173        
+ Backend API   http://localhost:3001/api    
+ AI Service    http://localhost:8000/docs   
 
 ---
 
@@ -79,11 +62,10 @@ docker compose exec ai-service pytest tests/ -v
 
 Los tres workflows en `.github/workflows/` se activan automáticamente:
 
-| Workflow          | Trigger                        | Qué hace                            |
-|-------------------|--------------------------------|-------------------------------------|
-| `backend.yml`     | Push/PR en `backend/` o `prisma/` | Lint → Test → Build Docker       |
-| `frontend.yml`    | Push/PR en `frontend/`         | Lint → Build prod → Build Docker    |
-| `ai-service.yml`  | Push/PR en `ai-service/`       | Lint → Pytest → Build Docker        |
+ Workflow           Trigger                         Qué hace                            
+ `backend.yml`      Push/PR en `backend/` o `prisma/`  Lint → Test → Build Docker       
+ `frontend.yml`     Push/PR en `frontend/`          Lint → Build prod → Build Docker   
+ `ai-service.yml`   Push/PR en `ai-service/`        Lint → Pytest → Build Docker        
 
 Para que el push a Docker Hub funcione, agrega estos **Secrets** en tu repo:
 - `DOCKERHUB_USERNAME`
@@ -93,12 +75,10 @@ Para que el push a Docker Hub funcione, agrega estos **Secrets** en tu repo:
 
 ## Stack tecnológico
 
-| Capa        | Tecnología                        |
-|-------------|-----------------------------------|
-| Frontend    | React 18, Vite, React Router      |
-| Backend     | Node 20, Express, JWT, bcryptjs   |
-| ORM         | **Prisma** (PostgreSQL)           |
-| Base datos  | PostgreSQL 16 (Docker)            |
-| AI Service  | Python 3.11, FastAPI, scikit-learn|
-| CI/CD       | GitHub Actions                    |
-| Contenedores| Docker + Docker Compose           |
+ Frontend     React 18, Vite, React Router      
+ Backend      Node 20, Express, JWT, bcryptjs   
+ ORM          **Prisma**          
+ Base datos   Sql lite (Docker)            
+ AI Service   Python 3.11, FastAPI
+ CI/CD        GitHub Actions                    
+ Contenedores Docker + Docker Compose           
