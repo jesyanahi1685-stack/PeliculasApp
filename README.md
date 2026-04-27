@@ -78,7 +78,7 @@ Para que el push a Docker Hub funcione, agrega estos **Secrets** en tu repo:
  Frontend     React 18, Vite, React Router      
  Backend      Node 20, Express, JWT, bcryptjs   
  ORM          **Prisma**          
- Base datos   Sql lite (Docker)            
+ Base datos   PostgreSQL (Docker)            
  AI Service   Python 3.11, FastAPI
  CI/CD        GitHub Actions                    
  Contenedores Docker + Docker Compose           
