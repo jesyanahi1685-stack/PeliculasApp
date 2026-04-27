@@ -1,0 +1,79 @@
+version: "3.9"
+
+services:
+  # ─── Base de datos ───────────────────────────────────────
+  db:
+    image: postgres:16-alpine
+    container_name: movie_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-movie_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-movie_pass}
+      POSTGRES_DB: ${POSTGRES_DB:-movie_recommender}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-movie_user}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─── Backend (Node + Express + Prisma) ──────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: movie_backend
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-movie_user}:${POSTGRES_PASSWORD:-movie_pass}@db:5432/${POSTGRES_DB:-movie_recommender}
+      JWT_SECRET: ${JWT_SECRET:-supersecretdev}
+      AI_SERVICE_URL: http://ai-service:8000
+      PORT: 3001
+    ports:
+      - "3001:3001"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+
+  # ─── Frontend (React + Vite) ────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: movie_frontend
+    restart: unless-stopped
+    environment:
+      VITE_API_URL: http://localhost:3001/api
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+  # ─── AI Service (Python + FastAPI) ──────────────────────
+  ai-service:
+    build:
+      context: ./ai-service
+      dockerfile: Dockerfile
+    container_name: movie_ai
+    restart: unless-stopped
+    environment:
+      TMDB_API_KEY: ${TMDB_API_KEY:-}
+      MODEL_PATH: /app/models
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./ai-service:/app
+      - ai_models:/app/models
+
+volumes:
+  postgres_data:
+  ai_models:

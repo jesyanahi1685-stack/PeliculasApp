@@ -1,0 +1,23 @@
+# Dependencias
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+
+# Build
+dist/
+build/
+
+# Entorno
+.env
+*.env.local
+
+# Prisma
+prisma/migrations/
+
+# Docker
+*.log
+
+# OS
+.DS_Store
+Thumbs.db

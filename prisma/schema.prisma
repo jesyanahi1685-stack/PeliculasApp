@@ -1,0 +1,72 @@
+// prisma/schema.prisma
+// ORM: Prisma  —  Base de datos: PostgreSQL
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Usuarios ─────────────────────────────────────────────
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String
+  password  String   // bcrypt hash
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  ratings   Rating[]
+  watchlist Watchlist[]
+
+  @@map("users")
+}
+
+// ─── Películas ────────────────────────────────────────────
+model Movie {
+  id          Int     @id @default(autoincrement())
+  tmdbId      Int     @unique  // ID de The Movie Database
+  title       String
+  overview    String?
+  posterPath  String?
+  releaseYear Int?
+  genres      String[] // ["Action", "Drama"]
+  avgRating   Float?
+
+  ratings   Rating[]
+  watchlist Watchlist[]
+
+  @@map("movies")
+}
+
+// ─── Ratings de usuarios ──────────────────────────────────
+model Rating {
+  id        Int      @id @default(autoincrement())
+  score     Int      // 1–5
+  createdAt DateTime @default(now())
+
+  userId  Int
+  movieId Int
+  user    User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  movie   Movie @relation(fields: [movieId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, movieId])  // un rating por usuario/película
+  @@map("ratings")
+}
+
+// ─── Lista de seguimiento ─────────────────────────────────
+model Watchlist {
+  id        Int      @id @default(autoincrement())
+  addedAt   DateTime @default(now())
+
+  userId  Int
+  movieId Int
+  user    User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  movie   Movie @relation(fields: [movieId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, movieId])
+  @@map("watchlist")
+}
