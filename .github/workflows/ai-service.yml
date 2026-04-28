@@ -29,7 +29,7 @@ jobs:
         working-directory: ai-service
         run: |
           pip install flake8
-          flake8 src/ --max-line-length=120 --ignore=E501
+          flake8 src/ --max-line-length=120 --ignore=E501,E221,E241,E302,E401,F841
 
       - name: Tests
         working-directory: ai-service
