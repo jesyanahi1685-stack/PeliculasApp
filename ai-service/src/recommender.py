@@ -1,4 +1,4 @@
-# ai-service/src/recommender.py
+# clase de ai-service/src/recommender.py
 """
 Recomendador basado en contenido (géneros).
 Algoritmo simple para el proyecto escolar:
