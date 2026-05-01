@@ -1,7 +1,7 @@
 // backend/src/routes/movies.routes.js
-const router  = require("express").Router();
-const prisma  = require("../lib/prisma");
-const auth    = require("../middleware/auth.middleware");
+const router = require("express").Router();
+const prisma = require("../lib/prisma");
+const auth   = require("../middleware/auth.middleware");
 
 // GET /api/movies  — listar con paginación
 router.get("/", async (req, res, next) => {
@@ -22,7 +22,7 @@ router.get("/", async (req, res, next) => {
 router.get("/:id", async (req, res, next) => {
   try {
     const movie = await prisma.movie.findUnique({
-      where: { id: parseInt(req.params.id) },
+      where:   { id: parseInt(req.params.id) },
       include: { ratings: { include: { user: { select: { name: true } } } } },
     });
     if (!movie) return res.status(404).json({ error: "Película no encontrada" });
@@ -33,9 +33,18 @@ router.get("/:id", async (req, res, next) => {
 // POST /api/movies/:id/rate  (requiere auth)
 router.post("/:id/rate", auth, async (req, res, next) => {
   try {
-    const { score } = req.body; // 1–5
+    const { score } = req.body;
     const movieId   = parseInt(req.params.id);
     const userId    = req.user.id;
+
+    // ─── Validación del score ────────────────────────────
+    if (score === undefined || score === null) {
+      return res.status(400).json({ error: "El score es requerido" });
+    }
+    if (!Number.isInteger(score) || score < 1 || score > 5) {
+      return res.status(400).json({ error: "El score debe ser un número entero entre 1 y 5" });
+    }
+    // ────────────────────────────────────────────────────
 
     const rating = await prisma.rating.upsert({
       where:  { userId_movieId: { userId, movieId } },
