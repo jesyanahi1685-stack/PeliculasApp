@@ -19,4 +19,4 @@ async function obtenerPeliculas() {
   }
 }
 
-module.exports = { obtenerPeliculas };
+module.exports = { obtenerPeliculas }; // fix export
