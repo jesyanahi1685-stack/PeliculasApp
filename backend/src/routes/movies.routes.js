@@ -2,6 +2,7 @@
 const router  = require("express").Router();
 const prisma  = require("../lib/prisma");
 const auth    = require("../middleware/auth.middleware");
+const { obtenerPeliculas } = require("../lib/tmdb");
 
 // GET /api/movies  — listar con paginación
 router.get("/", async (req, res, next) => {
@@ -17,6 +18,17 @@ router.get("/", async (req, res, next) => {
     res.json({ movies, total, page, pages: Math.ceil(total / limit) });
   } catch (err) { next(err); }
 });
+
+// GET /api/movies/popular — películas desde TMDb
+router.get("/popular", async (req, res, next) => {
+  try {
+    const peliculas = await obtenerPeliculas();
+    res.json(peliculas);
+  } catch (err) {
+    next(err);
+  }
+});
+
 
 // GET /api/movies/:id
 router.get("/:id", async (req, res, next) => {
